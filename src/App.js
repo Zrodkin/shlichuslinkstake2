@@ -9,7 +9,7 @@ import {
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import MessageBoard from "./pages/MessageBoard";
-import Listings from "./pages/Listings";
+import Listings from "./components/Listings";
 import CreateListing from "./pages/CreateListing";
 import MyListings from "./pages/MyListings";
 import MyApplications from "./pages/MyApplications";
