@@ -38,13 +38,15 @@ const Header = () => {
 function App() {
   return (
     <BrowserRouter>
-      <Header />
       <Routes>
         <Route
           path="/"
           element={
             <ProtectedRoute>
-              <MessageBoard />
+              <>
+                <Header />
+                <MessageBoard />
+              </>
             </ProtectedRoute>
           }
         />
