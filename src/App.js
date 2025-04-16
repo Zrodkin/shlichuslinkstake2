@@ -8,7 +8,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className="bg-red-500 text-white p-4 text-xl font-bold">
-      
+        TEST123 — Navbar placeholder
       </div>
       <Routes>
         <Route path="/" element={<MessageBoard />} />
