@@ -3,6 +3,7 @@ import React, { useState } from "react";
 function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState(""); // 👈 new state for role
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
@@ -13,7 +14,7 @@ function Signup() {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, role }), // 👈 include role
       });
 
       const data = await response.json();
@@ -46,6 +47,7 @@ function Signup() {
               className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
             <input
               type="password"
@@ -53,7 +55,19 @@ function Signup() {
               className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
+            <select
+              className="w-full border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              required
+            >
+              <option value="">Select Role</option>
+              <option value="organization">Organization (Post listings)</option>
+              <option value="male">Male Volunteer</option>
+              <option value="female">Female Volunteer</option>
+            </select>
             <button
               type="submit"
               className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 font-semibold"
