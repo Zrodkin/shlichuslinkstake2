@@ -8,11 +8,17 @@ function Listings() {
   const [endFilter, setEndFilter] = useState("");
   const [sortOption, setSortOption] = useState("newest");
   const [appliedIds, setAppliedIds] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isApplying, setIsApplying] = useState(false);
   const role = localStorage.getItem("role");
+  
+  // Define a consistent API base URL
+  const API_URL = process.env.REACT_APP_API_URL || "https://shlichus-backend-47a68a0c2980.herokuapp.com";
 
   useEffect(() => {
     const fetchListings = async () => {
-      let url = `${process.env.REACT_APP_API_URL || "https://shlichus-backend-47a68a0c2980.herokuapp.com"}/listings`;
+      setIsLoading(true);
+      let url = `${API_URL}/listings`;
 
       if (role === "male" || role === "female") {
         url += `?volunteerGender=${role}`;
@@ -24,11 +30,13 @@ function Listings() {
         setListings(data);
       } catch (err) {
         console.error("Failed to load listings:", err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchListings();
-  }, [role]);
+  }, [role, API_URL]);
 
   useEffect(() => {
     // Fetch user's applied listings to update the UI
@@ -37,7 +45,7 @@ function Listings() {
       if (!token || role === "organization") return;
 
       try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL || "https://shlichus-backend-47a68a0c2980.herokuapp.com"}/applications/my`, {
+        const res = await fetch(`${API_URL}/applications/my`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -52,7 +60,7 @@ function Listings() {
     };
 
     fetchAppliedListings();
-  }, [role]);
+  }, [role, API_URL]);
 
   const handleClearFilters = () => {
     setSearchTerm("");
@@ -64,9 +72,10 @@ function Listings() {
 
   const handleApply = async (listingId) => {
     const token = localStorage.getItem("token");
+    setIsApplying(true);
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL || "https://shlichus-backend-47a68a0c2980.herokuapp.com"}/applications`, {
+      const res = await fetch(`${API_URL}/applications`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -83,6 +92,8 @@ function Listings() {
       alert("✅ Successfully applied and message sent to the organization.");
     } catch (err) {
       alert("❌ " + err.message);
+    } finally {
+      setIsApplying(false);
     }
   };
 
@@ -145,6 +156,37 @@ function Listings() {
   };
 
   console.log("Current user role:", role);
+
+  // Loading skeleton
+  if (isLoading) {
+    return (
+      <div className="p-4 sm:p-6 md:p-8 bg-gray-100 min-h-screen max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6 text-center sm:text-left">Volunteer Opportunities</h1>
+        <div className="mb-8 bg-white rounded-lg shadow-md p-4 animate-pulse">
+          <div className="h-10 bg-gray-200 rounded mb-4"></div>
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+            <div className="h-10 bg-gray-200 rounded"></div>
+            <div className="h-10 bg-gray-200 rounded"></div>
+            <div className="h-10 bg-gray-200 rounded"></div>
+            <div className="h-10 bg-gray-200 rounded"></div>
+            <div className="h-10 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="bg-white rounded-xl overflow-hidden shadow-md h-80 animate-pulse">
+              <div className="h-48 bg-gray-200"></div>
+              <div className="p-5">
+                <div className="h-5 bg-gray-200 rounded mb-3 w-3/4"></div>
+                <div className="h-4 bg-gray-200 rounded mb-3 w-1/2"></div>
+                <div className="h-4 bg-gray-200 rounded w-full"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 sm:p-6 md:p-8 bg-gray-100 min-h-screen max-w-7xl mx-auto">
@@ -293,9 +335,10 @@ function Listings() {
                   ) : (
                     <button
                       onClick={() => handleApply(listing._id)}
-                      className="w-full py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
+                      disabled={isApplying}
+                      className={`w-full py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition ${isApplying ? 'opacity-70 cursor-not-allowed' : ''}`}
                     >
-                      Apply Now
+                      {isApplying ? 'Applying...' : 'Apply Now'}
                     </button>
                   )
                 )}

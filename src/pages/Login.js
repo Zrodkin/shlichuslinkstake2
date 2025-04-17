@@ -8,10 +8,13 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
+    console.log("Login attempt with:", email);
 
     try {
-      // Using hardcoded URL instead of environment variable
-      const response = await fetch("https://shlichus-backend-47a68a0c2980.herokuapp.com/auth/login", {
+      // Define API URL with fallback
+      const API_URL = process.env.REACT_APP_API_URL || "https://shlichus-backend-47a68a0c2980.herokuapp.com";
+      
+      const response = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -22,15 +25,17 @@ function Login() {
 
       // Store token in localStorage
       localStorage.setItem("token", data.token);
+      console.log("Token stored successfully");
       
       // Now fetch the user details to get their role
-      const userResponse = await fetch("https://shlichus-backend-47a68a0c2980.herokuapp.com/auth/me", {
+      const userResponse = await fetch(`${API_URL}/auth/me`, {
         headers: { 
           "Authorization": `Bearer ${data.token}` 
         }
       });
       
       const userData = await userResponse.json();
+      console.log("User data retrieved:", userData);
       
       if (userResponse.ok && userData.role) {
         // Store the user's role in localStorage
@@ -41,6 +46,7 @@ function Login() {
         // Add redirect to home page after successful login
         window.location.href = "/";
       } else {
+        console.error("Failed to get valid user role:", userData);
         throw new Error("Failed to get user role");
       }
     } catch (err) {
