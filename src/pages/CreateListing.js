@@ -14,6 +14,10 @@ function CreateListing() {
   const [message, setMessage] = useState("");
   const token = localStorage.getItem("token");
 
+  useEffect(() => {
+    console.log("Current token:", token ? token.substring(0, 15) + "..." : "No token");
+  }, [token]);
+
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -32,10 +36,13 @@ function CreateListing() {
   
     try {
       console.log("Submitting to:", `${process.env.REACT_APP_API_URL}/api/listings`);
+      
+      // When using FormData, we can't set Content-Type header
+      // But we need to include the auth token
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/listings`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`
         },
         body: submission,
       });
