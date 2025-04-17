@@ -7,7 +7,7 @@ function Inbox() {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/messages`, {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/messages`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -22,7 +22,7 @@ function Inbox() {
 
   const handleMarkAsRead = async (id) => {
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/messages/${id}/read`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/messages/${id}/read`, {
         method: "PATCH",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -39,7 +39,7 @@ function Inbox() {
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this message?")) return;
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/messages/${id}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/messages/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

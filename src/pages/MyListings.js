@@ -17,7 +17,7 @@ function MyListings() {
   useEffect(() => {
     const fetchListings = async () => {
       try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/listings/mine`, {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/listings/mine`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -36,7 +36,7 @@ function MyListings() {
     if (!window.confirm("Are you sure you want to delete this listing?")) return;
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/listings/${id}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/listings/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -72,7 +72,7 @@ function MyListings() {
     e.preventDefault();
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/listings/${editingId}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/listings/${editingId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -95,7 +95,7 @@ function MyListings() {
     <div className="p-4 sm:p-6 md:p-8 bg-gray-100 min-h-screen max-w-7xl mx-auto">
       <h1 className="text-3xl font-bold mb-6 text-center sm:text-left">My Listings</h1>
       {listings.length === 0 ? (
-        <p className="text-gray-600 text-center">You haven’t posted any listings yet.</p>
+        <p className="text-gray-600 text-center">You haven't posted any listings yet.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {listings.map((listing) => (

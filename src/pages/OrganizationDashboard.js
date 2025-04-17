@@ -7,7 +7,7 @@ function OrganizationDashboard() {
   useEffect(() => {
     const fetchApplications = async () => {
       try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/applications/received`, {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/applications/received`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

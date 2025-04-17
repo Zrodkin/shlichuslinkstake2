@@ -7,7 +7,7 @@ function MyApplications() {
   useEffect(() => {
     const fetchApplications = async () => {
       try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/applications/mine`, {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/applications/mine`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -24,7 +24,7 @@ function MyApplications() {
     <div className="p-4 sm:p-6 md:p-8 bg-gray-100 min-h-screen max-w-7xl mx-auto">
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center sm:text-left">My Applications</h1>
       {applications.length === 0 ? (
-        <p className="text-gray-600 text-center sm:text-left">You haven’t applied to any listings yet.</p>
+        <p className="text-gray-600 text-center sm:text-left">You haven't applied to any listings yet.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {applications.map((app) => (
