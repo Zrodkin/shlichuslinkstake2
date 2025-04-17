@@ -3,7 +3,7 @@ import React, { useState } from "react";
 function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState(""); // 👈 new state for role
+  const [role, setRole] = useState(""); // 👈 role state
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
@@ -11,17 +11,26 @@ function Signup() {
     setMessage("");
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/signup`, {
+      // Use hardcoded URL as fallback if environment variable isn't set
+      const apiUrl = process.env.REACT_APP_API_URL || "https://shlichus-backend-47a68a0c2980.herokuapp.com";
+      const response = await fetch(`${apiUrl}/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, role }), // 👈 include role
+        body: JSON.stringify({ email, password, role }),
       });
 
       const data = await response.json();
       if (!response.ok) throw new Error(data.msg || data.error || "Signup failed");
 
       setMessage("✅ Signup successful. You can now log in.");
+      
+      // Optionally redirect to login after successful signup
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 2000);
+      
     } catch (err) {
+      console.error("Signup error:", err);
       setMessage(`❌ ${err.message}`);
     }
   };

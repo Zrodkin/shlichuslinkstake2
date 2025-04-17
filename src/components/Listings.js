@@ -12,7 +12,7 @@ function Listings() {
 
   useEffect(() => {
     const fetchListings = async () => {
-      let url = `${process.env.REACT_APP_API_URL}/listings`;
+      let url = `${process.env.REACT_APP_API_URL || "https://shlichus-backend-47a68a0c2980.herokuapp.com"}/listings`;
 
       if (role === "male" || role === "female") {
         url += `?volunteerGender=${role}`;
@@ -37,7 +37,7 @@ function Listings() {
       if (!token || role === "organization") return;
 
       try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/applications/my`, {
+        const res = await fetch(`${process.env.REACT_APP_API_URL || "https://shlichus-backend-47a68a0c2980.herokuapp.com"}/applications/my`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -66,7 +66,7 @@ function Listings() {
     const token = localStorage.getItem("token");
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/applications`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL || "https://shlichus-backend-47a68a0c2980.herokuapp.com"}/applications`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -143,6 +143,8 @@ function Listings() {
     
     return colors[Math.abs(hash) % colors.length];
   };
+
+  console.log("Current user role:", role);
 
   return (
     <div className="p-4 sm:p-6 md:p-8 bg-gray-100 min-h-screen max-w-7xl mx-auto">
@@ -236,8 +238,18 @@ function Listings() {
         ) : (
           sortedListings.map((listing) => (
             <div key={listing._id} className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition duration-300 flex flex-col h-full">
-              {/* Placeholder image with dynamic color */}
-              <div className={`h-48 bg-gradient-to-r ${getColor(listing.jobTitle)} relative`}>
+              {/* Image or gradient placeholder */}
+              <div className="h-48 relative">
+                {listing.imageUrl ? (
+                  <img 
+                    src={listing.imageUrl} 
+                    alt={listing.jobTitle}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className={`h-full w-full bg-gradient-to-r ${getColor(listing.jobTitle)}`}></div>
+                )}
+                
                 <div className="absolute bottom-2 right-2 bg-white px-2 py-1 rounded-lg text-xs font-semibold text-red-600">
                   For {listing.volunteerGender} volunteers
                 </div>

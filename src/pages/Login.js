@@ -20,16 +20,29 @@ function Login() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.msg || data.error || "Login failed");
 
-      setMessage("✅ Login successful");
+      // Store token in localStorage
       localStorage.setItem("token", data.token);
-      // Store user role in localStorage
-      localStorage.setItem("role", data.role);
       
-      // Log for debugging
-      console.log("Login successful, role:", data.role);
+      // Now fetch the user details to get their role
+      const userResponse = await fetch("https://shlichus-backend-47a68a0c2980.herokuapp.com/auth/me", {
+        headers: { 
+          "Authorization": `Bearer ${data.token}` 
+        }
+      });
       
-      // Add redirect to home page after successful login
-      window.location.href = "/";
+      const userData = await userResponse.json();
+      
+      if (userResponse.ok && userData.role) {
+        // Store the user's role in localStorage
+        localStorage.setItem("role", userData.role);
+        console.log("User role set to:", userData.role);
+        setMessage("✅ Login successful");
+        
+        // Add redirect to home page after successful login
+        window.location.href = "/";
+      } else {
+        throw new Error("Failed to get user role");
+      }
     } catch (err) {
       console.error("Login error:", err);
       setMessage(`❌ ${err.message}`);
