@@ -21,7 +21,7 @@ function CreateListing() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
-
+  
     const submission = new FormData();
     for (const key in formData) {
       submission.append(key, formData[key]);
@@ -29,8 +29,9 @@ function CreateListing() {
     if (image) {
       submission.append("image", image);
     }
-
+  
     try {
+      console.log("Submitting to:", `${process.env.REACT_APP_API_URL}/listings`);
       const response = await fetch(`${process.env.REACT_APP_API_URL}/listings`, {
         method: "POST",
         headers: {
@@ -38,10 +39,19 @@ function CreateListing() {
         },
         body: submission,
       });
-
+  
+      // Check status before trying to parse JSON
+      if (!response.ok) {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || errorData.msg || `Server error: ${response.status}`);
+        } else {
+          throw new Error(`Server error: ${response.status}`);
+        }
+      }
+  
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || data.msg || "Failed to create listing");
-
       setMessage("✅ Listing created successfully!");
       setFormData({
         organizationName: "",
@@ -54,6 +64,7 @@ function CreateListing() {
       });
       setImage(null);
     } catch (err) {
+      console.error("Create listing error:", err);
       setMessage(`❌ ${err.message}`);
     }
   };

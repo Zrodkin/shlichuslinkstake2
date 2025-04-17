@@ -53,9 +53,23 @@ const Header = () => {
   useEffect(() => {
     const fetchUnreadCount = async () => {
       try {
+        console.log("Fetching messages from:", `${process.env.REACT_APP_API_URL}/messages`);
         const res = await fetch(`${process.env.REACT_APP_API_URL}/messages`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        
+        // Check if response is OK before trying to parse JSON
+        if (!res.ok) {
+          console.error("Message fetch failed with status:", res.status);
+          return;
+        }
+        
+        const contentType = res.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          console.error("Received non-JSON response from messages API:", contentType);
+          return;
+        }
+        
         const data = await res.json();
         const unread = Array.isArray(data)
           ? data.filter((msg) => msg.read === false).length
@@ -65,7 +79,6 @@ const Header = () => {
         console.error("Failed to fetch unread messages:", err);
       }
     };
-
     if (token) {
       fetchUnreadCount();
     }
