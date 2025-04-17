@@ -76,13 +76,6 @@ const Header = () => {
           isMenuOpen ? "block" : "hidden sm:flex"
         }`}
       >
-        <button
-          onClick={() => navigate("/listings")}
-          className="bg-white text-red-500 px-3 py-1 rounded hover:bg-gray-100 transition text-sm font-semibold"
-        >
-          Listings
-        </button>
-
         {(role === "male" || role === "female") && (
           <button
             onClick={() => navigate("/my-applications")}
@@ -146,18 +139,20 @@ function App() {
             <ProtectedRoute>
               <>
                 <Header />
-                <MessageBoard role={role} />
+                <Listings role={role} />
               </>
             </ProtectedRoute>
           }
         />
         <Route
-          path="/listings"
+          path="/message-board"
           element={
-            <>
-              <Header />
-              <Listings role={role} />
-            </>
+            <ProtectedRoute>
+              <>
+                <Header />
+                <MessageBoard role={role} />
+              </>
+            </ProtectedRoute>
           }
         />
         <Route
