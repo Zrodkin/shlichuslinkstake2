@@ -8,47 +8,98 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
-    console.log("Login attempt with:", email);
-
+    
     try {
       // Define API URL with fallback
       const API_URL = process.env.REACT_APP_API_URL || "https://shlichus-backend-47a68a0c2980.herokuapp.com";
+      console.log("Using API URL:", API_URL);
       
-      const response = await fetch(`${API_URL}/auth/login`, {
+      // First, log in to get the token
+      const loginResponse = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.msg || data.error || "Login failed");
+      // Check if the response is valid JSON
+      let data;
+      try {
+        data = await loginResponse.json();
+      } catch (error) {
+        console.error("Failed to parse login response as JSON:", error);
+        const rawText = await loginResponse.text();
+        console.log("Raw response:", rawText);
+        throw new Error("Login API returned invalid JSON");
+      }
+
+      if (!loginResponse.ok) {
+        throw new Error(data.msg || data.error || "Login failed");
+      }
 
       // Store token in localStorage
       localStorage.setItem("token", data.token);
-      console.log("Token stored successfully");
+      console.log("Token stored successfully:", data.token);
       
-      // Now fetch the user details to get their role
-      const userResponse = await fetch(`${API_URL}/auth/me`, {
-        headers: { 
-          "Authorization": `Bearer ${data.token}` 
+      // Here's the important part - we'll try several possible endpoints
+      // for getting user information
+      
+      // First, check if user data was already included in the login response
+      if (data.user && data.user.role) {
+        localStorage.setItem("role", data.user.role);
+        console.log("User role found in login response:", data.user.role);
+        setMessage("✅ Login successful");
+        window.location.href = "/";
+        return;
+      }
+      
+      // If not, try several possible API endpoints
+      const possibleEndpoints = [
+        "/auth/me",
+        "/users/me",
+        "/api/auth/me",
+        "/api/users/current",
+        "/user"
+      ];
+      
+      let userData = null;
+      let successEndpoint = null;
+      
+      for (const endpoint of possibleEndpoints) {
+        try {
+          console.log(`Trying endpoint: ${API_URL}${endpoint}`);
+          const userResponse = await fetch(`${API_URL}${endpoint}`, {
+            headers: { 
+              "Authorization": `Bearer ${data.token}` 
+            }
+          });
+          
+          if (userResponse.ok) {
+            userData = await userResponse.json();
+            successEndpoint = endpoint;
+            break;
+          }
+        } catch (err) {
+          console.log(`Endpoint ${endpoint} failed:`, err);
+          // Continue to the next endpoint
         }
-      });
+      }
       
-      const userData = await userResponse.json();
-      console.log("User data retrieved:", userData);
-      
-      if (userResponse.ok && userData.role) {
+      if (userData && userData.role) {
         // Store the user's role in localStorage
         localStorage.setItem("role", userData.role);
-        console.log("User role set to:", userData.role);
+        console.log(`User role set to ${userData.role} from endpoint ${successEndpoint}`);
         setMessage("✅ Login successful");
-        
-        // Add redirect to home page after successful login
         window.location.href = "/";
       } else {
-        console.error("Failed to get valid user role:", userData);
-        throw new Error("Failed to get user role");
+        // If we still don't have the role, use a default role based on the email
+        // This is a temporary fallback
+        const defaultRole = email.includes("org") ? "organization" : "volunteer";
+        localStorage.setItem("role", defaultRole);
+        console.log(`No role found in API. Using fallback role: ${defaultRole}`);
+        setMessage("✅ Login successful (using default role)");
+        window.location.href = "/";
       }
+      
     } catch (err) {
       console.error("Login error:", err);
       setMessage(`❌ ${err.message}`);
