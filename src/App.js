@@ -81,7 +81,7 @@ const Header = () => {
   console.log("Header component, current role:", role);
 
   return (
-    <header className="bg-red-500 text-white p-4 sm:px-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+    <header className="bg-blue-600 text-white p-4 sm:px-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
       <div className="flex justify-between items-center w-full sm:w-auto">
         <div onClick={() => navigate("/")} className="cursor-pointer">
           <h1 className="text-lg sm:text-xl font-bold">Shlichus Connect</h1>
@@ -103,7 +103,7 @@ const Header = () => {
         {(role === "male" || role === "female") && (
           <button
             onClick={() => navigate("/my-applications")}
-            className="bg-white text-red-500 px-3 py-1 rounded hover:bg-gray-100 transition text-sm font-semibold"
+            className="bg-white text-blue-600 px-3 py-1 rounded hover:bg-gray-100 transition text-sm font-semibold"
           >
             My Applications
           </button>
@@ -113,13 +113,13 @@ const Header = () => {
           <>
             <button
               onClick={() => navigate("/create-listing")}
-              className="bg-white text-red-500 px-3 py-1 rounded hover:bg-gray-100 transition text-sm font-semibold"
+              className="bg-white text-blue-600 px-3 py-1 rounded hover:bg-gray-100 transition text-sm font-semibold"
             >
               + Create Listing
             </button>
             <button
               onClick={() => navigate("/my-listings")}
-              className="bg-white text-red-500 px-3 py-1 rounded hover:bg-gray-100 transition text-sm font-semibold"
+              className="bg-white text-blue-600 px-3 py-1 rounded hover:bg-gray-100 transition text-sm font-semibold"
             >
               My Listings
             </button>
@@ -128,11 +128,11 @@ const Header = () => {
 
         <button
           onClick={() => navigate("/inbox")}
-          className="relative bg-white text-red-500 px-3 py-1 rounded hover:bg-gray-100 transition text-sm font-semibold"
+          className="relative bg-white text-blue-600 px-3 py-1 rounded hover:bg-gray-100 transition text-sm font-semibold"
         >
           Inbox
           {unreadCount > 0 && (
-            <span className="absolute -top-1 -right-2 bg-red-600 text-white text-xs font-bold rounded-full px-1.5 py-0.5">
+            <span className="absolute -top-1 -right-2 bg-blue-700 text-white text-xs font-bold rounded-full px-1.5 py-0.5">
               {unreadCount}
             </span>
           )}
@@ -141,7 +141,7 @@ const Header = () => {
         {token && (
           <button
             onClick={handleLogout}
-            className="bg-white text-red-500 px-3 py-1 rounded hover:bg-gray-100 transition text-sm font-semibold"
+            className="bg-white text-blue-600 px-3 py-1 rounded hover:bg-gray-100 transition text-sm font-semibold"
           >
             Logout
           </button>

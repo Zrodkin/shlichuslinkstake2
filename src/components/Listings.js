@@ -124,16 +124,16 @@ function Listings() {
 
   // Generate a color based on listing title (for consistent color per listing)
   const getColor = (str) => {
-    if (!str) return "from-red-400 to-red-600";
+    if (!str) return "from-blue-400 to-blue-600";
     
     const colors = [
-      "from-red-400 to-red-600",
       "from-blue-400 to-blue-600",
-      "from-green-400 to-green-600",
-      "from-purple-400 to-purple-600",
-      "from-yellow-400 to-yellow-600",
-      "from-pink-400 to-pink-600",
       "from-indigo-400 to-indigo-600",
+      "from-cyan-400 to-cyan-600",
+      "from-teal-400 to-teal-600",
+      "from-sky-400 to-sky-600",
+      "from-violet-400 to-violet-600",
+      "from-purple-400 to-purple-600",
     ];
     
     let hash = 0;
@@ -160,7 +160,7 @@ function Listings() {
               placeholder="Job title, location..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
           <div>
@@ -168,7 +168,7 @@ function Listings() {
             <select
               value={genderFilter}
               onChange={(e) => setGenderFilter(e.target.value)}
-              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="">All Genders</option>
               <option value="male">Male Volunteers</option>
@@ -181,7 +181,7 @@ function Listings() {
               type="date"
               value={startFilter}
               onChange={(e) => setStartFilter(e.target.value)}
-              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
           <div>
@@ -190,7 +190,7 @@ function Listings() {
               type="date"
               value={endFilter}
               onChange={(e) => setEndFilter(e.target.value)}
-              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
           <div>
@@ -198,7 +198,7 @@ function Listings() {
             <select
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
-              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-red-500 focus:border-red-500"
+              className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>
@@ -230,7 +230,7 @@ function Listings() {
             <p className="text-gray-600 text-lg">No listings match your filters.</p>
             <button 
               onClick={handleClearFilters}
-              className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
             >
               Clear Filters
             </button>
@@ -250,7 +250,7 @@ function Listings() {
                   <div className={`h-full w-full bg-gradient-to-r ${getColor(listing.jobTitle)}`}></div>
                 )}
                 
-                <div className="absolute bottom-2 right-2 bg-white px-2 py-1 rounded-lg text-xs font-semibold text-red-600">
+                <div className="absolute bottom-2 right-2 bg-white px-2 py-1 rounded-lg text-xs font-semibold text-blue-600">
                   For {listing.volunteerGender} volunteers
                 </div>
                 {/* Organization name as overlay text */}
@@ -293,7 +293,7 @@ function Listings() {
                   ) : (
                     <button
                       onClick={() => handleApply(listing._id)}
-                      className="w-full py-3 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition"
+                      className="w-full py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition"
                     >
                       Apply Now
                     </button>
