@@ -88,9 +88,9 @@ function Listings() {
 
   const filteredListings = listings.filter((l) => {
     const matchesSearch =
-      l.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      l.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      l.location.toLowerCase().includes(searchTerm.toLowerCase());
+      l.jobTitle?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      l.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      l.location?.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesGender = genderFilter === "" || l.volunteerGender === genderFilter;
     const matchesStart = !startFilter || new Date(l.startDate) >= new Date(startFilter);
@@ -117,8 +117,31 @@ function Listings() {
 
   // Helper function to truncate text
   const truncateText = (text, maxLength) => {
+    if (!text) return "";
     if (text.length <= maxLength) return text;
     return text.slice(0, maxLength) + '...';
+  };
+
+  // Generate a color based on listing title (for consistent color per listing)
+  const getColor = (str) => {
+    if (!str) return "from-red-400 to-red-600";
+    
+    const colors = [
+      "from-red-400 to-red-600",
+      "from-blue-400 to-blue-600",
+      "from-green-400 to-green-600",
+      "from-purple-400 to-purple-600",
+      "from-yellow-400 to-yellow-600",
+      "from-pink-400 to-pink-600",
+      "from-indigo-400 to-indigo-600",
+    ];
+    
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    
+    return colors[Math.abs(hash) % colors.length];
   };
 
   return (
@@ -213,20 +236,21 @@ function Listings() {
         ) : (
           sortedListings.map((listing) => (
             <div key={listing._id} className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition duration-300 flex flex-col h-full">
-              {/* Placeholder image - you can replace with actual images if available */}
-              <div className="h-48 bg-gradient-to-r from-red-400 to-red-600 relative">
+              {/* Placeholder image with dynamic color */}
+              <div className={`h-48 bg-gradient-to-r ${getColor(listing.jobTitle)} relative`}>
                 <div className="absolute bottom-2 right-2 bg-white px-2 py-1 rounded-lg text-xs font-semibold text-red-600">
                   For {listing.volunteerGender} volunteers
+                </div>
+                {/* Organization name as overlay text */}
+                <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded-lg text-sm">
+                  {listing.organizationName}
                 </div>
               </div>
               
               <div className="p-5 flex flex-col flex-grow">
                 {/* Header */}
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <h2 className="text-xl font-semibold">{listing.jobTitle}</h2>
-                    <p className="text-sm text-gray-600">{listing.organizationName}</p>
-                  </div>
+                <div className="mb-3">
+                  <h2 className="text-xl font-semibold">{listing.jobTitle}</h2>
                 </div>
                 
                 {/* Location */}

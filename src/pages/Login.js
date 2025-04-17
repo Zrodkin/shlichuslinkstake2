@@ -22,6 +22,11 @@ function Login() {
 
       setMessage("✅ Login successful");
       localStorage.setItem("token", data.token);
+      // Store user role in localStorage
+      localStorage.setItem("role", data.role);
+      
+      // Log for debugging
+      console.log("Login successful, role:", data.role);
       
       // Add redirect to home page after successful login
       window.location.href = "/";

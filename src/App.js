@@ -21,6 +21,27 @@ const ProtectedRoute = ({ children }) => {
   return token ? children : <Navigate to="/login" />;
 };
 
+// Role-based route protection
+const OrgRoute = ({ children }) => {
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+  
+  if (!token) return <Navigate to="/login" />;
+  if (role !== "organization") return <Navigate to="/" />;
+  
+  return children;
+};
+
+const VolunteerRoute = ({ children }) => {
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+  
+  if (!token) return <Navigate to="/login" />;
+  if (role !== "male" && role !== "female") return <Navigate to="/" />;
+  
+  return children;
+};
+
 // Responsive navbar with role-aware buttons and hamburger menu
 const Header = () => {
   const navigate = useNavigate();
@@ -56,10 +77,13 @@ const Header = () => {
     navigate("/login");
   };
 
+  // Log role for debugging
+  console.log("Header component, current role:", role);
+
   return (
     <header className="bg-red-500 text-white p-4 sm:px-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
       <div className="flex justify-between items-center w-full sm:w-auto">
-        <div>
+        <div onClick={() => navigate("/")} className="cursor-pointer">
           <h1 className="text-lg sm:text-xl font-bold">Shlichus Connect</h1>
           {role && <p className="text-sm">Role: {role}</p>}
         </div>
@@ -128,8 +152,6 @@ const Header = () => {
 };
 
 function App() {
-  const role = localStorage.getItem("role");
-
   return (
     <BrowserRouter>
       <Routes>
@@ -139,7 +161,7 @@ function App() {
             <ProtectedRoute>
               <>
                 <Header />
-                <Listings role={role} />
+                <Listings />
               </>
             </ProtectedRoute>
           }
@@ -150,7 +172,7 @@ function App() {
             <ProtectedRoute>
               <>
                 <Header />
-                <MessageBoard role={role} />
+                <MessageBoard />
               </>
             </ProtectedRoute>
           }
@@ -158,40 +180,28 @@ function App() {
         <Route
           path="/create-listing"
           element={
-            role === "organization" ? (
-              <>
-                <Header />
-                <CreateListing />
-              </>
-            ) : (
-              <Navigate to="/" />
-            )
+            <OrgRoute>
+              <Header />
+              <CreateListing />
+            </OrgRoute>
           }
         />
         <Route
           path="/my-listings"
           element={
-            role === "organization" ? (
-              <>
-                <Header />
-                <MyListings />
-              </>
-            ) : (
-              <Navigate to="/" />
-            )
+            <OrgRoute>
+              <Header />
+              <MyListings />
+            </OrgRoute>
           }
         />
         <Route
           path="/my-applications"
           element={
-            role === "male" || role === "female" ? (
-              <>
-                <Header />
-                <MyApplications />
-              </>
-            ) : (
-              <Navigate to="/" />
-            )
+            <VolunteerRoute>
+              <Header />
+              <MyApplications />
+            </VolunteerRoute>
           }
         />
         <Route
