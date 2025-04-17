@@ -10,7 +10,8 @@ function Login() {
     setMessage("");
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
+      // Using hardcoded URL instead of environment variable
+      const response = await fetch("https://shlichus-backend-47a68a0c2980.herokuapp.com/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -21,7 +22,11 @@ function Login() {
 
       setMessage("✅ Login successful");
       localStorage.setItem("token", data.token);
+      
+      // Add redirect to home page after successful login
+      window.location.href = "/";
     } catch (err) {
+      console.error("Login error:", err);
       setMessage(`❌ ${err.message}`);
     }
   };
