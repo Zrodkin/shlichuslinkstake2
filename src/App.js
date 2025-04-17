@@ -53,8 +53,8 @@ const Header = () => {
   useEffect(() => {
     const fetchUnreadCount = async () => {
       try {
-        console.log("Fetching messages from:", `${process.env.REACT_APP_API_URL}/messages`);
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/messages`, {
+        console.log("Fetching messages from:", `${process.env.REACT_APP_API_URL}/api/messages`);
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/messages`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         

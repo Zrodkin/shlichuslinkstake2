@@ -18,7 +18,7 @@ function Listings() {
   useEffect(() => {
     const fetchListings = async () => {
       setIsLoading(true);
-      let url = `${API_URL}/listings`;
+      let url = `${API_URL}/api/listings`;
 
       if (role === "male" || role === "female") {
         url += `?volunteerGender=${role}`;
@@ -45,7 +45,7 @@ function Listings() {
       if (!token || role === "organization") return;
 
       try {
-        const res = await fetch(`${API_URL}/applications/my`, {
+        const res = await fetch(`${API_URL}/api/applications/my`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -75,7 +75,7 @@ function Listings() {
     setIsApplying(true);
 
     try {
-      const res = await fetch(`${API_URL}/applications`, {
+      const res = await fetch(`${API_URL}/api/applications`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

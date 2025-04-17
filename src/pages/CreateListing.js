@@ -31,8 +31,8 @@ function CreateListing() {
     }
   
     try {
-      console.log("Submitting to:", `${process.env.REACT_APP_API_URL}/listings`);
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/listings`, {
+      console.log("Submitting to:", `${process.env.REACT_APP_API_URL}/api/listings`);
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/listings`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
