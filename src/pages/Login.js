@@ -40,6 +40,15 @@ function Login() {
       localStorage.setItem("token", data.token);
       console.log("Token stored successfully:", data.token);
       
+      // Store token in localStorage
+localStorage.setItem("token", data.token);
+console.log("Token stored successfully:", data.token);
+console.log("Token format check:", {
+  token: data.token,
+  length: data.token.length,
+  starts_with: data.token.substring(0, 20),
+  expires_at: data.expiresAt || "Not provided"
+});
       // Here's the important part - we'll try several possible endpoints
       // for getting user information
       

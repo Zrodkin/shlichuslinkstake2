@@ -39,12 +39,16 @@ function CreateListing() {
       const API_URL = process.env.REACT_APP_API_URL || "https://shlichus-backend-47a68a0c2980.herokuapp.com";
       console.log("Submitting to:", `${API_URL}/api/listings`);
       
+      // Re-grab the token in case it changed
+      const currentToken = localStorage.getItem("token");
+      console.log("Using token:", currentToken ? "token exists" : "no token");
+      
       // When using FormData, we can't set Content-Type header
       // But we need to include the auth token
       const response = await fetch(`${API_URL}/api/listings`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${currentToken}`
         },
         body: submission,
       });
@@ -56,6 +60,8 @@ function CreateListing() {
           const errorData = await response.json();
           throw new Error(errorData.error || errorData.msg || `Server error: ${response.status}`);
         } else {
+          const errorText = await response.text();
+          console.error("Server error response:", errorText);
           throw new Error(`Server error: ${response.status}`);
         }
       }
