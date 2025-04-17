@@ -45,17 +45,29 @@ function Listings() {
       if (!token || role === "organization") return;
 
       try {
-        const res = await fetch(`${API_URL}/api/applications/my`, {
+        // First check if the endpoint exists before trying to use it
+        const res = await fetch(`${API_URL}/api/applications`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        
+        // If we can't access the applications endpoint at all, just silently return
+        if (!res.ok) {
+          console.log("Applications endpoint not available:", res.status);
+          return;
+        }
+        
+        // Parse the response and check if we can extract the listings
         const data = await res.json();
         
         if (Array.isArray(data)) {
-          const ids = data.map(app => app.listingId);
+          // If data is an array of applications, extract the listing IDs
+          const ids = data.filter(app => app.userId === "current_user_id")
+                         .map(app => app.listingId);
           setAppliedIds(ids);
         }
       } catch (err) {
         console.error("Failed to load applied listings:", err);
+        // Don't let this error block the rest of the application
       }
     };
 

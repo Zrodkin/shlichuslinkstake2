@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function CreateListing() {
   const [formData, setFormData] = useState({
@@ -35,11 +35,13 @@ function CreateListing() {
     }
   
     try {
-      console.log("Submitting to:", `${process.env.REACT_APP_API_URL}/api/listings`);
+      // Define a consistent API URL with fallback
+      const API_URL = process.env.REACT_APP_API_URL || "https://shlichus-backend-47a68a0c2980.herokuapp.com";
+      console.log("Submitting to:", `${API_URL}/api/listings`);
       
       // When using FormData, we can't set Content-Type header
       // But we need to include the auth token
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/listings`, {
+      const response = await fetch(`${API_URL}/api/listings`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`
