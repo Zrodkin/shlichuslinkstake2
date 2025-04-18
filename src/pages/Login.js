@@ -15,7 +15,7 @@ function Login() {
       console.log("Using API URL:", API_URL);
       
       // First, log in to get the token
-      const loginResponse = await fetch(`${API_URL}/auth/login`, {
+      const loginResponse = await fetch(`${API_URL}api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
