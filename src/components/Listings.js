@@ -67,30 +67,35 @@ function Listings() {
     setSortOption("newest");
   };
 
-  const handleApply = async (listingId) => {
-    const token = localStorage.getItem("token");
-    setIsApplying(true);
-
+  // Modified function to handle WhatsApp redirection
+  const handleApply = async (listing) => {
     try {
-      const res = await fetch(`${API_URL}/api/applications`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ listingId }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || "Failed to apply");
-
-      setAppliedIds((prev) => [...prev, listingId]);
-      alert("✅ Successfully applied and message sent to the organization.");
+      // Get user info from localStorage
+      const userName = localStorage.getItem("name") || "Volunteer";
+      const userEmail = localStorage.getItem("email") || "";
+      
+      // Check if the listing has a WhatsApp number
+      if (!listing.whatsappNumber) {
+        throw new Error("This organization doesn't have a WhatsApp contact number");
+      }
+      
+      // Format the WhatsApp number (remove any non-digit characters)
+      const formattedNumber = listing.whatsappNumber.replace(/\D/g, '');
+      
+      // Create message text
+      const message = `Hello, my name is ${userName}. I'm interested in the "${listing.jobTitle}" position at ${listing.organizationName}. I would like to apply for this volunteer opportunity.`;
+      
+      // Create WhatsApp URL
+      const whatsappUrl = `https://wa.me/${formattedNumber}?text=${encodeURIComponent(message)}`;
+      
+      // Track this as an "application" in your UI
+      setAppliedIds((prev) => [...prev, listing._id]);
+      
+      // Open WhatsApp in a new tab
+      window.open(whatsappUrl, '_blank');
+      
     } catch (err) {
-      alert("❌ " + err.message);
-    } finally {
-      setIsApplying(false);
+      alert("❌ " + (err.message || "Failed to connect to WhatsApp"));
     }
   };
 
@@ -323,19 +328,22 @@ function Listings() {
                   </span>
                 </div>
                 
-                {/* Apply Button */}
+                {/* Apply Button - Modified to use WhatsApp */}
                 {role !== "organization" && (
                   appliedIds.includes(listing._id) ? (
                     <div className="bg-green-50 text-green-700 py-2 px-4 rounded-lg text-center font-medium">
-                      Applied ✅
+                      Message Sent ✅
                     </div>
                   ) : (
                     <button
-                      onClick={() => handleApply(listing._id)}
-                      disabled={isApplying}
-                      className={`w-full py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition ${isApplying ? 'opacity-70 cursor-not-allowed' : ''}`}
+                      onClick={() => handleApply(listing)}
+                      className="w-full py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition flex items-center justify-center"
                     >
-                      {isApplying ? 'Applying...' : 'Apply Now'}
+                      <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                        <path d="M11.5 0C5.149 0 0 5.148 0 11.5 0 13.394.474 15.227 1.33 16.852L.072 22.463l5.725-1.207c1.579.794 3.352 1.243 5.223 1.243 6.351 0 11.5-5.149 11.5-11.5C22.5 5.148 17.851 0 11.5 0zm0 21c-1.739 0-3.414-.413-4.92-1.193l-.353-.155-3.655.96.968-3.593-.17-.364C2.561 15.035 2 13.322 2 11.5 2 6.262 6.262 2 11.5 2S21 6.262 21 11.5 16.738 21 11.5 21z"/>
+                      </svg>
+                      Contact via WhatsApp
                     </button>
                   )
                 )}
