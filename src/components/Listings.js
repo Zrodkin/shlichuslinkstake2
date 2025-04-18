@@ -67,7 +67,7 @@ function Listings() {
     setSortOption("newest");
   };
 
-  // Modified function to handle WhatsApp redirection
+  // Updated function to handle WhatsApp redirection
   const handleApply = async (listing) => {
     try {
       // Get user info from localStorage
@@ -75,12 +75,12 @@ function Listings() {
       const userEmail = localStorage.getItem("email") || "";
       
       // Check if the listing has a WhatsApp number
-      if (!listing.whatsappNumber) {
+      if (!listing.whatsAppNumber) {
         throw new Error("This organization doesn't have a WhatsApp contact number");
       }
       
       // Format the WhatsApp number (remove any non-digit characters)
-      const formattedNumber = listing.whatsappNumber.replace(/\D/g, '');
+      const formattedNumber = listing.whatsAppNumber.replace(/\D/g, '');
       
       // Create message text
       const message = `Hello, my name is ${userName}. I'm interested in the "${listing.jobTitle}" position at ${listing.organizationName}. I would like to apply for this volunteer opportunity.`;
@@ -328,7 +328,7 @@ function Listings() {
                   </span>
                 </div>
                 
-                {/* Apply Button - Modified to use WhatsApp */}
+                {/* Apply Button - Updated to use whatsAppNumber */}
                 {role !== "organization" && (
                   appliedIds.includes(listing._id) ? (
                     <div className="bg-green-50 text-green-700 py-2 px-4 rounded-lg text-center font-medium">

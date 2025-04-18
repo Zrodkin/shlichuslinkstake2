@@ -14,6 +14,7 @@ import CreateListing from "./pages/CreateListing";
 import MyListings from "./pages/MyListings";
 import MyApplications from "./pages/MyApplications";
 import Inbox from "./pages/Inbox";
+import Profile from "./pages/Profile";
 
 // Protect routes from unauthenticated users
 const ProtectedRoute = ({ children }) => {
@@ -151,6 +152,14 @@ const Header = () => {
           )}
         </button>
 
+        {/* Add this button right before the Logout button */}
+<button
+  onClick={() => navigate("/profile")}
+  className="bg-white text-blue-600 px-3 py-1 rounded hover:bg-gray-100 transition text-sm font-semibold"
+>
+  Profile
+</button>
+
         {token && (
           <button
             onClick={handleLogout}
@@ -230,6 +239,17 @@ function App() {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route
+  path="/profile"
+  element={
+    <ProtectedRoute>
+      <>
+        <Header />
+        <Profile />
+      </>
+    </ProtectedRoute>
+  }
+/>
       </Routes>
     </BrowserRouter>
   );
